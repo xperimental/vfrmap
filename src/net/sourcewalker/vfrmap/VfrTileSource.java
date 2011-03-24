@@ -6,11 +6,7 @@ import org.osmdroid.tileprovider.tilesource.OnlineTileSourceBase;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.tileprovider.tilesource.XYTileSource;
 
-import android.util.Log;
-
 public class VfrTileSource extends XYTileSource {
-
-    private static final String TAG = "VfrTileSource";
 
     private static final String BASE_URL = "http://www.vfr-bulletin.de/maps/ICAO/";
 
@@ -38,7 +34,6 @@ public class VfrTileSource extends XYTileSource {
     @Override
     public String getTileURLString(MapTile aTile) {
         if (checkCoverage(aTile)) {
-            Log.d(TAG, "tile: " + aTile);
             int ymax = 1 << aTile.getZoomLevel();
             int flippedY = ymax - aTile.getY() - 1;
             StringBuffer sb = new StringBuffer(BASE_URL);
@@ -49,7 +44,6 @@ public class VfrTileSource extends XYTileSource {
             sb.append('/');
             sb.append(flippedY);
             sb.append(EXTENSION);
-            Log.d(TAG, "  url: " + sb.toString());
             return sb.toString();
         } else {
             return fallback.getTileURLString(aTile);
