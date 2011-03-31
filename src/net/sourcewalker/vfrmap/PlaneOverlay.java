@@ -11,11 +11,8 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
-import android.util.Log;
 
 public class PlaneOverlay extends Overlay {
-
-    private static final String TAG = "PlaneOverlay";
 
     private final Bitmap bitmap;
     private final MapView mapView;
@@ -69,7 +66,6 @@ public class PlaneOverlay extends Overlay {
         if (planeLocation != null) {
             Projection projection = osmv.getProjection();
             Point planePoint = projection.toMapPixels(planeLocation, null);
-            Log.d(TAG, "X: " + planePoint.x + " Y: " + planePoint.y);
 
             Matrix bitmapMatrix = new Matrix();
             bitmapMatrix.setRotate(azimuth, centerX, centerY);

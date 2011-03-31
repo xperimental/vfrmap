@@ -6,10 +6,6 @@ import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 
 import android.app.Activity;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -20,13 +16,16 @@ public class VfrMapActivity extends Activity {
 
     private static final String TAG = "VfrMapActivity";
 
+    private static final float RAD_TO_DEGREE = (float) (180 / Math.PI);
+
+    private static final int AVERAGE_SAMPLES = 5;
+
     private MapView mapView;
     private VfrTileSource tileSource;
     private PlaneOverlay locationOverlay;
     private LocationManager locationManager;
     private OwnLocationListener locationListener;
-    private SensorManager sensorManager;
-    private BearingListener sensorListener;
+    private CompassManager compassManager;
 
     /*
      * (non-Javadoc)
@@ -52,8 +51,9 @@ public class VfrMapActivity extends Activity {
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         locationListener = new OwnLocationListener();
 
-        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        sensorListener = new BearingListener();
+        compassManager = new CompassManager(this);
+        compassManager.addUpdateListener(new AveragingCompassListener(
+                AVERAGE_SAMPLES));
     }
 
     /*
@@ -72,9 +72,7 @@ public class VfrMapActivity extends Activity {
             locationListener.onLocationChanged(lastLocation);
         }
 
-        Sensor sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
-        sensorManager.registerListener(sensorListener, sensor,
-                SensorManager.SENSOR_DELAY_UI);
+        compassManager.resume();
     }
 
     /*
@@ -83,6 +81,7 @@ public class VfrMapActivity extends Activity {
      */
     @Override
     protected void onPause() {
+        compassManager.pause();
         locationManager.removeUpdates(locationListener);
 
         super.onPause();
@@ -142,27 +141,40 @@ public class VfrMapActivity extends Activity {
 
     }
 
-    private class BearingListener implements SensorEventListener {
+    private class AveragingCompassListener implements CompassManager.Listener {
 
-        /*
-         * (non-Javadoc)
-         * @see
-         * android.hardware.SensorEventListener#onAccuracyChanged(android.hardware
-         * .Sensor, int)
-         */
-        @Override
-        public void onAccuracyChanged(Sensor sensor, int accuracy) {
+        private float[] values;
+        private int index;
+
+        public AveragingCompassListener(final int samples) {
+            this.values = new float[samples];
+            this.index = 0;
+        }
+
+        public void newData(float data) {
+            values[index] = data;
+            index = (index + 1) % values.length;
+        }
+
+        private float getAverage() {
+            float sum = 0;
+            for (float value : values) {
+                sum += value;
+            }
+            return sum / values.length;
         }
 
         /*
          * (non-Javadoc)
          * @see
-         * android.hardware.SensorEventListener#onSensorChanged(android.hardware
-         * .SensorEvent)
+         * net.sourcewalker.vfrmap.CompassManager.Listener#onUpdateCompass(net
+         * .sourcewalker.vfrmap.CompassManager, float, float, float)
          */
         @Override
-        public void onSensorChanged(SensorEvent event) {
-            locationOverlay.setAzimuth(event.values[0]);
+        public void onUpdateCompass(CompassManager sender, float azimuth,
+                float pitch, float roll) {
+            newData(azimuth * RAD_TO_DEGREE);
+            locationOverlay.setAzimuth(getAverage());
         }
 
     }
