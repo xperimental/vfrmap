@@ -2,4 +2,14 @@
 <resources>
     <string name="hello">Hello World, MapActivity!</string>
     <string name="app_name">VFR Map</string>
+    <string name="data_height">Height (GPS):</string>
+    <string name="data_speed">Groundspeed:</string>
+    <string name="data_heading">Heading:</string>
+    <string name="data_accuracy">Accuracy (GPS):</string>
+    <string name="data_accuracy_old">Old GPS data!</string>
+    <string name="format_height_m">%.0f m</string>
+    <string name="format_height_ft">%.0f ft</string>
+    <string name="format_speed_kph">%.0f km/h</string>
+    <string name="format_heading">%.0f °</string>
+    <string name="format_accuracy">%.0f m</string>
 </resources>

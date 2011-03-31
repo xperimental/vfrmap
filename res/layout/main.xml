@@ -1,12 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <TableLayout
+        android:id="@+id/data_table"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:stretchColumns="1"
+        android:padding="10dip">
+        <TableRow
+            style="@style/data_row">
+            <TextView
+                style="@style/data_header"
+                android:text="@string/data_height" />
+            <TextView
+                style="@style/data_content"
+                android:id="@+id/data_height" />
+        </TableRow>
+        <TableRow
+            style="@style/data_row">
+            <TextView
+                style="@style/data_header"
+                android:text="@string/data_speed" />
+            <TextView
+                style="@style/data_content"
+                android:id="@+id/data_speed" />
+        </TableRow>
+        <TableRow
+            style="@style/data_row">
+            <TextView
+                style="@style/data_header"
+                android:text="@string/data_heading" />
+            <TextView
+                style="@style/data_content"
+                android:id="@+id/data_heading" />
+        </TableRow>
+        <TableRow
+            style="@style/data_row">
+            <TextView
+                style="@style/data_header"
+                android:text="@string/data_accuracy" />
+            <TextView
+                style="@style/data_content"
+                android:id="@+id/data_accuracy" />
+        </TableRow>
+    </TableLayout>
     <org.osmdroid.views.MapView
         android:id="@+id/mapview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_above="@id/data_table"
         android:clickable="true" />
-</LinearLayout>
+</RelativeLayout>

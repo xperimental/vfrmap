@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style
+        name="data_row">
+        <item
+            name="android:layout_width">match_parent</item>
+        <item
+            name="android:layout_height">wrap_content</item>
+    </style>
+    <style
+        name="data_header"
+        parent="@android:style/TextAppearance.Widget.TextView">
+        <item
+            name="android:layout_width">wrap_content</item>
+        <item
+            name="android:layout_height">wrap_content</item>
+    </style>
+    <style
+        name="data_content"
+        parent="@android:style/TextAppearance.Widget.TextView">
+        <item
+            name="android:layout_width">wrap_content</item>
+        <item
+            name="android:layout_height">wrap_content</item>
+        <item
+            name="android:gravity">right</item>
+    </style>
+</resources>

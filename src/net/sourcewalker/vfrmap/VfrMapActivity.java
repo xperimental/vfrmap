@@ -10,17 +10,15 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.TextView;
 
 public class VfrMapActivity extends Activity {
 
-    private static final String TAG = "VfrMapActivity";
-
     private static final float RAD_TO_DEGREE = (float) (180 / Math.PI);
-
-    private static final int AVERAGE_SAMPLES = 5;
+    private static final long WARN_LOCATION_AGE = 30000;
+    private static final double METER_TO_FEET = 3.2808399;
 
     private MapView mapView;
     private VfrTileSource tileSource;
@@ -28,6 +26,10 @@ public class VfrMapActivity extends Activity {
     private LocationManager locationManager;
     private OwnLocationListener locationListener;
     private CompassManager compassManager;
+    private TextView viewHeight;
+    private TextView viewSpeed;
+    private TextView viewHeading;
+    private TextView viewAccuracy;
 
     /*
      * (non-Javadoc)
@@ -40,6 +42,11 @@ public class VfrMapActivity extends Activity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.main);
+
+        viewHeight = (TextView) findViewById(R.id.data_height);
+        viewSpeed = (TextView) findViewById(R.id.data_speed);
+        viewHeading = (TextView) findViewById(R.id.data_heading);
+        viewAccuracy = (TextView) findViewById(R.id.data_accuracy);
 
         mapView = (MapView) findViewById(R.id.mapview);
         mapView.setBuiltInZoomControls(true);
@@ -57,8 +64,7 @@ public class VfrMapActivity extends Activity {
         locationListener = new OwnLocationListener();
 
         compassManager = new CompassManager(this);
-        compassManager.addUpdateListener(new AveragingCompassListener(
-                AVERAGE_SAMPLES));
+        compassManager.addUpdateListener(new CompassListener());
     }
 
     /*
@@ -94,6 +100,16 @@ public class VfrMapActivity extends Activity {
 
     private class OwnLocationListener implements LocationListener {
 
+        private final String formatHeight;
+        private final String formatSpeed;
+        private final String formatAccuracy;
+
+        public OwnLocationListener() {
+            formatHeight = getString(R.string.format_height_ft);
+            formatSpeed = getString(R.string.format_speed_kph);
+            formatAccuracy = getString(R.string.format_accuracy);
+        }
+
         /*
          * (non-Javadoc)
          * @see
@@ -102,11 +118,19 @@ public class VfrMapActivity extends Activity {
          */
         @Override
         public void onLocationChanged(Location location) {
-            Log.d(TAG, "onLocationChanged: " + location);
             IGeoPoint point = new GeoPoint(location.getLatitude(),
                     location.getLongitude());
-            mapView.getController().animateTo(point);
             locationOverlay.setPlaneLocation(point);
+
+            viewHeight.setText(String.format(formatHeight,
+                    location.getAltitude() * METER_TO_FEET));
+            viewSpeed.setText(String.format(formatSpeed, location.getSpeed()));
+            if (System.currentTimeMillis() - location.getTime() > WARN_LOCATION_AGE) {
+                viewAccuracy.setText(getString(R.string.data_accuracy_old));
+            } else {
+                viewAccuracy.setText(String.format(formatAccuracy,
+                        location.getAccuracy()));
+            }
         }
 
         /*
@@ -117,8 +141,6 @@ public class VfrMapActivity extends Activity {
          */
         @Override
         public void onProviderDisabled(String provider) {
-            // TODO Auto-generated method stub
-
         }
 
         /*
@@ -128,8 +150,6 @@ public class VfrMapActivity extends Activity {
          */
         @Override
         public void onProviderEnabled(String provider) {
-            // TODO Auto-generated method stub
-
         }
 
         /*
@@ -140,33 +160,16 @@ public class VfrMapActivity extends Activity {
          */
         @Override
         public void onStatusChanged(String provider, int status, Bundle extras) {
-            // TODO Auto-generated method stub
-
         }
 
     }
 
-    private class AveragingCompassListener implements CompassManager.Listener {
+    private class CompassListener implements CompassManager.Listener {
 
-        private float[] values;
-        private int index;
+        private final String formatHeading;
 
-        public AveragingCompassListener(final int samples) {
-            this.values = new float[samples];
-            this.index = 0;
-        }
-
-        public void newData(float data) {
-            values[index] = data;
-            index = (index + 1) % values.length;
-        }
-
-        private float getAverage() {
-            float sum = 0;
-            for (float value : values) {
-                sum += value;
-            }
-            return sum / values.length;
+        public CompassListener() {
+            this.formatHeading = getString(R.string.format_heading);
         }
 
         /*
@@ -178,8 +181,9 @@ public class VfrMapActivity extends Activity {
         @Override
         public void onUpdateCompass(CompassManager sender, float azimuth,
                 float pitch, float roll) {
-            newData(azimuth * RAD_TO_DEGREE);
-            locationOverlay.setAzimuth(getAverage());
+            float heading = azimuth * RAD_TO_DEGREE;
+            locationOverlay.setAzimuth(heading);
+            viewHeading.setText(String.format(formatHeading, heading));
         }
 
     }
