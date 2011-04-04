@@ -3,50 +3,70 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
-    <TableLayout
-        android:id="@+id/data_table"
+    <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
-        android:stretchColumns="1"
-        android:padding="10dip">
-        <TableRow
-            style="@style/data_row">
+        android:padding="10dip"
+        android:orientation="vertical"
+        android:id="@+id/data_table">
+        <TableLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    style="@style/data_header"
+                    android:text="@string/data_height" />
+                <TextView
+                    style="@style/data_header"
+                    android:gravity="center"
+                    android:text="@string/data_speed" />
+                <TextView
+                    style="@style/data_header"
+                    android:gravity="right"
+                    android:text="@string/data_heading" />
+            </TableRow>
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    style="@style/data_content"
+                    android:id="@+id/data_height"
+                    android:text="1500 ft" />
+                <TextView
+                    style="@style/data_content"
+                    android:gravity="center"
+                    android:id="@+id/data_speed"
+                    android:text="150 km/h" />
+                <TextView
+                    style="@style/data_content"
+                    android:gravity="right"
+                    android:id="@+id/data_heading"
+                    android:text="105 °" />
+            </TableRow>
+        </TableLayout>
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
             <TextView
-                style="@style/data_header"
-                android:text="@string/data_height" />
-            <TextView
-                style="@style/data_content"
-                android:id="@+id/data_height" />
-        </TableRow>
-        <TableRow
-            style="@style/data_row">
-            <TextView
-                style="@style/data_header"
-                android:text="@string/data_speed" />
-            <TextView
-                style="@style/data_content"
-                android:id="@+id/data_speed" />
-        </TableRow>
-        <TableRow
-            style="@style/data_row">
-            <TextView
-                style="@style/data_header"
-                android:text="@string/data_heading" />
-            <TextView
-                style="@style/data_content"
-                android:id="@+id/data_heading" />
-        </TableRow>
-        <TableRow
-            style="@style/data_row">
-            <TextView
-                style="@style/data_header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
                 android:text="@string/data_accuracy" />
             <TextView
-                style="@style/data_content"
-                android:id="@+id/data_accuracy" />
-        </TableRow>
-    </TableLayout>
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:id="@+id/data_accuracy"
+                android:text="@string/data_accuracy_old" />
+        </RelativeLayout>
+    </LinearLayout>
     <org.osmdroid.views.MapView
         android:id="@+id/mapview"
         android:layout_width="fill_parent"
@@ -55,5 +75,14 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_above="@id/data_table"
-        android:clickable="true" />
+        android:clickable="true"
+        android:background="#fff" />
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="8dip"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_above="@id/data_table"
+        android:background="@drawable/gradient"
+        android:id="@+id/mapview_gradient" />
 </RelativeLayout>
