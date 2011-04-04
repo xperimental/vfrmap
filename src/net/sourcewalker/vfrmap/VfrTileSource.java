@@ -14,10 +14,6 @@ public class VfrTileSource extends XYTileSource {
 
     private OnlineTileSourceBase fallback;
 
-    // private final Context context;
-    //
-    // private final String baseDir;
-
     public VfrTileSource() {
         super("VFR Map", ResourceProxy.string.unknown, 4, 11, 256, EXTENSION,
                 BASE_URL);
