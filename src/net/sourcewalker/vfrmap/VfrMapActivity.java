@@ -19,6 +19,7 @@ public class VfrMapActivity extends Activity {
     private static final float RAD_TO_DEGREE = (float) (180 / Math.PI);
     private static final long WARN_LOCATION_AGE = 30000;
     private static final double METER_TO_FEET = 3.2808399;
+    private static final double MS_TO_KMH = 3.6;
 
     private MapView mapView;
     private VfrTileSource tileSource;
@@ -124,7 +125,8 @@ public class VfrMapActivity extends Activity {
 
             viewHeight.setText(String.format(formatHeight,
                     location.getAltitude() * METER_TO_FEET));
-            viewSpeed.setText(String.format(formatSpeed, location.getSpeed()));
+            viewSpeed.setText(String.format(formatSpeed, location.getSpeed()
+                    * MS_TO_KMH));
             if (System.currentTimeMillis() - location.getTime() > WARN_LOCATION_AGE) {
                 viewAccuracy.setText(getString(R.string.data_accuracy_old));
             } else {
