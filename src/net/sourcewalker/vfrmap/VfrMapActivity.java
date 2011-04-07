@@ -33,6 +33,7 @@ public class VfrMapActivity extends Activity {
     private static final double METER_TO_FEET = 3.2808399;
     private static final double MS_TO_KMH = 3.6;
     private static final String TAG = "VfrMapActivity";
+    private static final boolean HONEYCOMB = android.os.Build.VERSION.SDK_INT >= 11;
 
     private MapView mapView;
     private IcaoTileSource icaoSource;
@@ -52,9 +53,11 @@ public class VfrMapActivity extends Activity {
     @Override
     protected void onCreate(Bundle icicle) {
         super.onCreate(icicle);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        if (!HONEYCOMB) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            requestWindowFeature(Window.FEATURE_NO_TITLE);
+        }
         setContentView(R.layout.main);
 
         viewHeight = (TextView) findViewById(R.id.data_height);
