@@ -1,4 +1,4 @@
-package net.sourcewalker.vfrmap;
+package net.sourcewalker.vfrmap.map;
 
 import org.osmdroid.ResourceProxy;
 import org.osmdroid.tileprovider.MapTile;
@@ -6,8 +6,8 @@ import org.osmdroid.tileprovider.tilesource.XYTileSource;
 
 public class IcaoTileSource extends XYTileSource {
 
-    static final int MIN_ZOOM = 4;
-    static final int MAX_ZOOM = 11;
+    public static final int MIN_ZOOM = 4;
+    public static final int MAX_ZOOM = 11;
 
     private static final String BASE_URL = "http://www.vfr-bulletin.de/maps/ICAO/";
     private static final String EXTENSION = ".jpg";

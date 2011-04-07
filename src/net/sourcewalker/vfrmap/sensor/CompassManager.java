@@ -1,4 +1,4 @@
-package net.sourcewalker.vfrmap;
+package net.sourcewalker.vfrmap.sensor;
 
 import java.util.ArrayList;
 import java.util.List;

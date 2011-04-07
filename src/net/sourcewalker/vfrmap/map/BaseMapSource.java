@@ -1,4 +1,4 @@
-package net.sourcewalker.vfrmap;
+package net.sourcewalker.vfrmap.map;
 
 import java.io.InputStream;
 

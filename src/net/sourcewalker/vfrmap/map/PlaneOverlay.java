@@ -1,4 +1,6 @@
-package net.sourcewalker.vfrmap;
+package net.sourcewalker.vfrmap.map;
+
+import net.sourcewalker.vfrmap.R;
 
 import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.views.MapView;

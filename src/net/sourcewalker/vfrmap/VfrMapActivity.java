@@ -1,5 +1,10 @@
 package net.sourcewalker.vfrmap;
 
+import net.sourcewalker.vfrmap.map.BaseMapSource;
+import net.sourcewalker.vfrmap.map.IcaoTileSource;
+import net.sourcewalker.vfrmap.map.PlaneOverlay;
+import net.sourcewalker.vfrmap.sensor.CompassManager;
+
 import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.tileprovider.MapTileProviderBasic;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
