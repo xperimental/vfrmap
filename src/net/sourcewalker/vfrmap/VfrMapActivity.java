@@ -60,6 +60,7 @@ public class VfrMapActivity extends Activity {
 
         mapView = (MapView) findViewById(R.id.mapview);
         mapView.setBuiltInZoomControls(true);
+        mapView.setMultiTouchControls(true);
         OnlineTileSourceBase tileSource = TileSourceFactory.MAPNIK;
         MapTileProviderBasic provider = new MapTileProviderBasic(this,
                 tileSource);
