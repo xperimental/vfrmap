@@ -2,7 +2,6 @@ package net.sourcewalker.vfrmap;
 
 import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.tileprovider.MapTileProviderBasic;
-import org.osmdroid.tileprovider.tilesource.OnlineTileSourceBase;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
@@ -61,7 +60,8 @@ public class VfrMapActivity extends Activity {
         mapView = (MapView) findViewById(R.id.mapview);
         mapView.setBuiltInZoomControls(true);
         mapView.setMultiTouchControls(true);
-        OnlineTileSourceBase tileSource = TileSourceFactory.MAPNIK;
+        BaseMapSource tileSource = new BaseMapSource(TileSourceFactory.MAPNIK,
+                IcaoTileSource.MIN_ZOOM, IcaoTileSource.MAX_ZOOM);
         MapTileProviderBasic provider = new MapTileProviderBasic(this,
                 tileSource);
         mapView.setTileSource(provider.getTileSource());
