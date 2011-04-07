@@ -14,9 +14,13 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class VfrMapActivity extends Activity {
 
@@ -24,6 +28,7 @@ public class VfrMapActivity extends Activity {
     private static final long WARN_LOCATION_AGE = 30000;
     private static final double METER_TO_FEET = 3.2808399;
     private static final double MS_TO_KMH = 3.6;
+    private static final String TAG = "VfrMapActivity";
 
     private MapView mapView;
     private IcaoTileSource icaoSource;
@@ -108,6 +113,35 @@ public class VfrMapActivity extends Activity {
         locationManager.removeUpdates(locationListener);
 
         super.onPause();
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see android.app.Activity#onCreateOptionsMenu(android.view.Menu)
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.map_menu, menu);
+        return true;
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see android.app.Activity#onOptionsItemSelected(android.view.MenuItem)
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        case R.id.menu_center:
+            locationOverlay.setSnapToLocation(true);
+            break;
+        default:
+            String msg = "Invalid menu id: " + item.getItemId();
+            Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+            Log.e(TAG, msg);
+            break;
+        }
+        return true;
     }
 
     private class OwnLocationListener implements LocationListener {

@@ -12,4 +12,5 @@
     <string name="format_speed_kph">%.0f km/h</string>
     <string name="format_heading">%.0f °</string>
     <string name="format_accuracy">%.0f m</string>
+    <string name="menu_center">My position</string>
 </resources>
