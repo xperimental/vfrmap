@@ -2,10 +2,14 @@ package net.sourcewalker.vfrmap;
 
 import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.tileprovider.MapTileProviderBasic;
+import org.osmdroid.tileprovider.tilesource.OnlineTileSourceBase;
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.TilesOverlay;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -22,7 +26,7 @@ public class VfrMapActivity extends Activity {
     private static final double MS_TO_KMH = 3.6;
 
     private MapView mapView;
-    private VfrTileSource tileSource;
+    private IcaoTileSource icaoSource;
     private PlaneOverlay locationOverlay;
     private LocationManager locationManager;
     private OwnLocationListener locationListener;
@@ -51,12 +55,19 @@ public class VfrMapActivity extends Activity {
 
         mapView = (MapView) findViewById(R.id.mapview);
         mapView.setBuiltInZoomControls(true);
-        tileSource = new VfrTileSource();
+        OnlineTileSourceBase tileSource = TileSourceFactory.MAPNIK;
         MapTileProviderBasic provider = new MapTileProviderBasic(this,
                 tileSource);
         mapView.setTileSource(provider.getTileSource());
         mapView.getController().setZoom(10);
         mapView.getController().setCenter(new GeoPoint(47, 10));
+
+        icaoSource = new IcaoTileSource();
+        MapTileProviderBasic icaoProvider = new MapTileProviderBasic(this,
+                icaoSource);
+        TilesOverlay icaoOverlay = new TilesOverlay(icaoProvider, this);
+        icaoOverlay.setLoadingBackgroundColor(Color.TRANSPARENT);
+        mapView.getOverlays().add(icaoOverlay);
 
         locationOverlay = new PlaneOverlay(this, mapView);
         mapView.getOverlays().add(locationOverlay);

@@ -2,23 +2,17 @@ package net.sourcewalker.vfrmap;
 
 import org.osmdroid.ResourceProxy;
 import org.osmdroid.tileprovider.MapTile;
-import org.osmdroid.tileprovider.tilesource.OnlineTileSourceBase;
-import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.tileprovider.tilesource.XYTileSource;
 
-public class VfrTileSource extends XYTileSource {
+public class IcaoTileSource extends XYTileSource {
 
     private static final String BASE_URL = "http://www.vfr-bulletin.de/maps/ICAO/";
 
     private static final String EXTENSION = ".jpg";
 
-    private OnlineTileSourceBase fallback;
-
-    public VfrTileSource() {
+    public IcaoTileSource() {
         super("VFR Map", ResourceProxy.string.unknown, 4, 11, 256, EXTENSION,
                 BASE_URL);
-
-        this.fallback = TileSourceFactory.MAPNIK;
     }
 
     /*
@@ -42,7 +36,7 @@ public class VfrTileSource extends XYTileSource {
             sb.append(EXTENSION);
             return sb.toString();
         } else {
-            return fallback.getTileURLString(aTile);
+            return null;
         }
     }
 
