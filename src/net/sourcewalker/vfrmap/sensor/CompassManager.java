@@ -8,6 +8,8 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.util.Log;
+import android.view.Surface;
 
 public class CompassManager implements SensorEventListener {
 
@@ -22,12 +24,19 @@ public class CompassManager implements SensorEventListener {
      */
     private static final long MAX_TIMESTAMP_DIFF = 20000;
 
+    private static final String TAG = "CompassManager";
+
     private SensorManager sensorManager;
     private ArrayList<Listener> listenerList;
     private Sensor accelerometer = null;
     private Sensor magnetometer = null;
     private SensorEvent lastAccelEvent = null;
     private SensorEvent lastMagnetEvent = null;
+    private int displayOrientation = 0;
+
+    public void setDisplayOrientation(int displayOrientation) {
+        this.displayOrientation = displayOrientation;
+    }
 
     public CompassManager(Context context) {
         listenerList = new ArrayList<Listener>();
@@ -106,10 +115,29 @@ public class CompassManager implements SensorEventListener {
         boolean success = SensorManager.getRotationMatrix(R, null,
                 lastAccelEvent.values, lastMagnetEvent.values);
         if (success) {
-            SensorManager.getOrientation(R, result);
+            float[] displayRemapR = getRemappedMatrix(R);
+            SensorManager.getOrientation(displayRemapR, result);
             return result;
         } else {
             return null;
         }
+    }
+
+    private float[] getRemappedMatrix(final float[] R) {
+        switch (displayOrientation) {
+        case Surface.ROTATION_180:
+            Log.w(TAG, "180 degree rotation not supported!");
+        case Surface.ROTATION_0:
+            break;
+        case Surface.ROTATION_90:
+        case Surface.ROTATION_270:
+            float[] remapR = new float[9];
+            SensorManager.remapCoordinateSystem(R, SensorManager.AXIS_X,
+                    SensorManager.AXIS_Z, remapR);
+            return remapR;
+        default:
+            Log.w(TAG, "Unknown display orientation: " + displayOrientation);
+        }
+        return R;
     }
 }
