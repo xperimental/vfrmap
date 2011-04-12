@@ -106,6 +106,11 @@ public class VfrMapActivity extends Activity {
             locationListener.onLocationChanged(lastLocation);
         }
 
+        WindowManager windowService = (WindowManager) getSystemService(WINDOW_SERVICE);
+        int displayOrientation = windowService.getDefaultDisplay()
+                .getOrientation();
+        compassManager.setDisplayOrientation(displayOrientation);
+        Log.d(TAG, "displayOrientation: " + displayOrientation);
         compassManager.resume();
     }
 
