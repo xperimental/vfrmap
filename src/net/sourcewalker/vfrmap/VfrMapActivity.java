@@ -163,11 +163,21 @@ public class VfrMapActivity extends Activity {
         private final String formatHeight;
         private final String formatSpeed;
         private final String formatAccuracy;
+        private final String formatOldGps;
+        private final String ageSeconds;
+        private final String ageMinutes;
+        private final String ageHours;
+        private final String ageDays;
 
         public OwnLocationListener() {
             formatHeight = getString(R.string.format_height_ft);
             formatSpeed = getString(R.string.format_speed_kph);
             formatAccuracy = getString(R.string.format_accuracy);
+            formatOldGps = getString(R.string.format_old_gps);
+            ageSeconds = getString(R.string.age_seconds);
+            ageMinutes = getString(R.string.age_minutes);
+            ageHours = getString(R.string.age_hours);
+            ageDays = getString(R.string.age_days);
         }
 
         /*
@@ -186,11 +196,40 @@ public class VfrMapActivity extends Activity {
                     location.getAltitude() * METER_TO_FEET));
             viewSpeed.setText(String.format(formatSpeed, location.getSpeed()
                     * MS_TO_KMH));
-            if (System.currentTimeMillis() - location.getTime() > WARN_LOCATION_AGE) {
-                viewAccuracy.setText(getString(R.string.data_accuracy_old));
+            final long gpsAge = System.currentTimeMillis() - location.getTime();
+            if (gpsAge > WARN_LOCATION_AGE) {
+                viewAccuracy.setText(String.format(formatOldGps,
+                        formatAge(gpsAge)));
             } else {
                 viewAccuracy.setText(String.format(formatAccuracy,
                         location.getAccuracy()));
+            }
+        }
+
+        /**
+         * Format the data age as a nice string.
+         * 
+         * @param gpsAge
+         *            Age in milliseconds.
+         * @return Age expressed as readable string.
+         */
+        private String formatAge(long gpsAge) {
+            final long seconds = gpsAge / 1000;
+            if (seconds < 60) {
+                return seconds + ageSeconds;
+            } else {
+                final long minutes = seconds / 60;
+                if (minutes < 60) {
+                    return minutes + ageMinutes;
+                } else {
+                    final long hours = minutes / 60;
+                    if (hours < 24) {
+                        return hours + ageHours;
+                    } else {
+                        final long days = hours / 24;
+                        return days + ageDays;
+                    }
+                }
             }
         }
 

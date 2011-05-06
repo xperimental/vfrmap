@@ -64,7 +64,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
                 android:id="@+id/data_accuracy"
-                android:text="@string/data_accuracy_old" />
+                android:text="@string/format_old_gps" />
         </RelativeLayout>
     </LinearLayout>
     <org.osmdroid.views.MapView
