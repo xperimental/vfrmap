@@ -245,7 +245,10 @@ public class VfrMapActivity extends Activity {
         public void onUpdateCompass(CompassManager sender, float azimuth,
                 float pitch, float roll) {
             averager.addSample(azimuth);
-            final float heading = averager.getAverage() * RAD_TO_DEGREE;
+            float heading = (averager.getAverage() * RAD_TO_DEGREE) % 360;
+            if (heading < 0) {
+                heading += 360;
+            }
             locationOverlay.setAzimuth(heading);
             viewHeading.setText(String.format(formatHeading, heading));
         }
