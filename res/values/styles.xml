@@ -1,19 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style
-        name="data_header"
-        parent="@android:style/TextAppearance.Widget.TextView">
-        <item
-            name="android:layout_width">fill_parent</item>
-        <item
-            name="android:layout_height">wrap_content</item>
-        <item
-            name="android:layout_weight">1</item>
+
+    <style name="data_header" parent="@android:style/TextAppearance.Widget.TextView">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
     </style>
-    <style
-        name="data_content"
-        parent="@style/data_header">
-        <item
-            name="android:textSize">10pt</item>
+
+    <style name="data_content" parent="@style/data_header">
+        <item name="android:textSize">10pt</item>
     </style>
+
+    <style name="Theme.Vfrmap" parent="Theme.Sherlock" />
+
 </resources>

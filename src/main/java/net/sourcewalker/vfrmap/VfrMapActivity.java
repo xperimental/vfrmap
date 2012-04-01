@@ -12,21 +12,22 @@ import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.TilesOverlay;
 
-import android.app.Activity;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class VfrMapActivity extends Activity {
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
+
+public class VfrMapActivity extends SherlockActivity {
 
     private static final float RAD_TO_DEGREE = (float) (180 / Math.PI);
     private static final long WARN_LOCATION_AGE = 30000;
@@ -68,17 +69,15 @@ public class VfrMapActivity extends Activity {
         mapView = (MapView) findViewById(R.id.mapview);
         mapView.setBuiltInZoomControls(true);
         mapView.setMultiTouchControls(true);
-        BaseMapSource tileSource = new BaseMapSource(TileSourceFactory.MAPNIK,
-                IcaoTileSource.MIN_ZOOM, IcaoTileSource.MAX_ZOOM);
-        MapTileProviderBasic provider = new MapTileProviderBasic(this,
-                tileSource);
+        BaseMapSource tileSource = new BaseMapSource(TileSourceFactory.MAPNIK, IcaoTileSource.MIN_ZOOM,
+                IcaoTileSource.MAX_ZOOM);
+        MapTileProviderBasic provider = new MapTileProviderBasic(this, tileSource);
         mapView.setTileSource(provider.getTileSource());
         mapView.getController().setZoom(10);
         mapView.getController().setCenter(new GeoPoint(47, 10));
 
         icaoSource = new IcaoTileSource();
-        MapTileProviderBasic icaoProvider = new MapTileProviderBasic(this,
-                icaoSource);
+        MapTileProviderBasic icaoProvider = new MapTileProviderBasic(this, icaoSource);
         TilesOverlay icaoOverlay = new TilesOverlay(icaoProvider, this);
         icaoOverlay.setLoadingBackgroundColor(Color.TRANSPARENT);
         mapView.getOverlays().add(icaoOverlay);
@@ -101,17 +100,14 @@ public class VfrMapActivity extends Activity {
     protected void onResume() {
         super.onResume();
 
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                1000, 10, locationListener);
-        Location lastLocation = locationManager
-                .getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 10, locationListener);
+        Location lastLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         if (lastLocation != null) {
             locationListener.onLocationChanged(lastLocation);
         }
 
         WindowManager windowService = (WindowManager) getSystemService(WINDOW_SERVICE);
-        int displayOrientation = windowService.getDefaultDisplay()
-                .getOrientation();
+        int displayOrientation = windowService.getDefaultDisplay().getOrientation();
         compassManager.setDisplayOrientation(displayOrientation);
         Log.d(TAG, "displayOrientation: " + displayOrientation);
         compassManager.resume();
@@ -135,7 +131,7 @@ public class VfrMapActivity extends Activity {
      */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.map_menu, menu);
+        getSupportMenuInflater().inflate(R.menu.map_menu, menu);
         return true;
     }
 
@@ -188,21 +184,16 @@ public class VfrMapActivity extends Activity {
          */
         @Override
         public void onLocationChanged(Location location) {
-            IGeoPoint point = new GeoPoint(location.getLatitude(),
-                    location.getLongitude());
+            IGeoPoint point = new GeoPoint(location.getLatitude(), location.getLongitude());
             locationOverlay.setPlaneLocation(point);
 
-            viewHeight.setText(String.format(formatHeight,
-                    location.getAltitude() * METER_TO_FEET));
-            viewSpeed.setText(String.format(formatSpeed, location.getSpeed()
-                    * MS_TO_KMH));
+            viewHeight.setText(String.format(formatHeight, location.getAltitude() * METER_TO_FEET));
+            viewSpeed.setText(String.format(formatSpeed, location.getSpeed() * MS_TO_KMH));
             final long gpsAge = System.currentTimeMillis() - location.getTime();
             if (gpsAge > WARN_LOCATION_AGE) {
-                viewAccuracy.setText(String.format(formatOldGps,
-                        formatAge(gpsAge)));
+                viewAccuracy.setText(String.format(formatOldGps, formatAge(gpsAge)));
             } else {
-                viewAccuracy.setText(String.format(formatAccuracy,
-                        location.getAccuracy()));
+                viewAccuracy.setText(String.format(formatAccuracy, location.getAccuracy()));
             }
         }
 
@@ -281,8 +272,7 @@ public class VfrMapActivity extends Activity {
          * .sourcewalker.vfrmap.CompassManager, float, float, float)
          */
         @Override
-        public void onUpdateCompass(CompassManager sender, float azimuth,
-                float pitch, float roll) {
+        public void onUpdateCompass(CompassManager sender, float azimuth, float pitch, float roll) {
             averager.addSample(azimuth);
             float heading = (averager.getAverage() * RAD_TO_DEGREE) % 360;
             if (heading < 0) {
