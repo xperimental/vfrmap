@@ -1,23 +1,21 @@
 package net.sourcewalker.vfrmap;
 
-import net.sourcewalker.vfrmap.map.BaseMapSource;
+import net.sourcewalker.vfrmap.map.IcaoTileProvider;
 import net.sourcewalker.vfrmap.map.IcaoTileSource;
 import net.sourcewalker.vfrmap.map.PlaneOverlay;
 import net.sourcewalker.vfrmap.sensor.CompassManager;
 
+import org.osmdroid.DefaultResourceProxyImpl;
 import org.osmdroid.api.IGeoPoint;
-import org.osmdroid.tileprovider.MapTileProviderBasic;
-import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
-import org.osmdroid.views.overlay.TilesOverlay;
 
-import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.TextView;
 
@@ -36,7 +34,6 @@ public class VfrMapActivity extends SherlockActivity {
     private static final double MS_TO_KMH = 3.6;
 
     private MapView mapView;
-    private IcaoTileSource icaoSource;
     private PlaneOverlay locationOverlay;
     private LocationManager locationManager;
     private OwnLocationListener locationListener;
@@ -63,19 +60,12 @@ public class VfrMapActivity extends SherlockActivity {
         viewHeading = (TextView) findViewById(R.id.data_heading);
         viewAccuracy = (TextView) findViewById(R.id.data_accuracy);
 
-        mapView = (MapView) findViewById(R.id.mapview);
-        BaseMapSource tileSource = new BaseMapSource(TileSourceFactory.MAPNIK, IcaoTileSource.MIN_ZOOM,
-                IcaoTileSource.MAX_ZOOM);
-        MapTileProviderBasic provider = new MapTileProviderBasic(this, tileSource);
-        mapView.setTileSource(provider.getTileSource());
+        IcaoTileProvider icaoProvider = new IcaoTileProvider(this);
+        mapView = new MapView(this, IcaoTileSource.TILE_SIZE, new DefaultResourceProxyImpl(this), icaoProvider);
+        ((ViewGroup) findViewById(R.id.mapview)).addView(mapView);
+
         mapView.getController().setZoom(10);
         mapView.getController().setCenter(new GeoPoint(47, 10));
-
-        icaoSource = new IcaoTileSource();
-        MapTileProviderBasic icaoProvider = new MapTileProviderBasic(this, icaoSource);
-        TilesOverlay icaoOverlay = new TilesOverlay(icaoProvider, this);
-        icaoOverlay.setLoadingBackgroundColor(Color.TRANSPARENT);
-        mapView.getOverlays().add(icaoOverlay);
 
         locationOverlay = new PlaneOverlay(this, mapView);
         mapView.getOverlays().add(locationOverlay);

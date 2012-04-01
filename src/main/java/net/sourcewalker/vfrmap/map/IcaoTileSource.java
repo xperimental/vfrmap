@@ -8,14 +8,13 @@ public class IcaoTileSource extends XYTileSource {
 
     public static final int MIN_ZOOM = 4;
     public static final int MAX_ZOOM = 11;
+    public static final int TILE_SIZE = 256;
 
     private static final String BASE_URL = "http://www.vfr-bulletin.de/maps/ICAO/";
     private static final String EXTENSION = ".jpg";
-    private static final int TILE_SIZE = 256;
 
     public IcaoTileSource() {
-        super("VFR Map", ResourceProxy.string.unknown, MIN_ZOOM, MAX_ZOOM,
-                TILE_SIZE, EXTENSION, BASE_URL);
+        super("VFR Map", ResourceProxy.string.unknown, MIN_ZOOM, MAX_ZOOM, TILE_SIZE, EXTENSION, BASE_URL);
     }
 
     /*

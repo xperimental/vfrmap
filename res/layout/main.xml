@@ -67,7 +67,7 @@
                 android:text="@string/format_old_gps" />
         </RelativeLayout>
     </LinearLayout>
-    <org.osmdroid.views.MapView
+    <FrameLayout
         android:id="@+id/mapview"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
@@ -75,8 +75,7 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_above="@id/data_table"
-        android:clickable="true"
-        android:background="#fff" />
+        android:clickable="true" />
     <View
         android:layout_width="fill_parent"
         android:layout_height="8dip"
