@@ -11,10 +11,16 @@
         <item name="android:textSize">10pt</item>
     </style>
 
+    <style name="Widget.ActionBar.Transparent" parent="Widget.Sherlock.ActionBar">
+        <item name="android:background">@drawable/actionbar_background_transparent</item>
+    </style>
+
     <style name="Theme.Vfrmap" parent="Theme.Sherlock" />
 
     <style name="Theme.Vfrmap.Fullscreen" parent="Theme.Vfrmap">
         <item name="android:windowFullscreen">true</item>
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:actionBarStyle">@style/Widget.ActionBar.Transparent</item>
     </style>
 
 </resources>
