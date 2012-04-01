@@ -18,7 +18,6 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,12 +28,12 @@ import com.actionbarsherlock.view.MenuItem;
 
 public class VfrMapActivity extends SherlockActivity {
 
+    private static final String TAG = "VfrMapActivity";
+
     private static final float RAD_TO_DEGREE = (float) (180 / Math.PI);
     private static final long WARN_LOCATION_AGE = 30000;
     private static final double METER_TO_FEET = 3.2808399;
     private static final double MS_TO_KMH = 3.6;
-    private static final String TAG = "VfrMapActivity";
-    private static final boolean HONEYCOMB = android.os.Build.VERSION.SDK_INT >= 11;
 
     private MapView mapView;
     private IcaoTileSource icaoSource;
@@ -55,10 +54,6 @@ public class VfrMapActivity extends SherlockActivity {
     protected void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        if (!HONEYCOMB) {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-            requestWindowFeature(Window.FEATURE_NO_TITLE);
-        }
         setContentView(R.layout.main);
 
         viewHeight = (TextView) findViewById(R.id.data_height);
