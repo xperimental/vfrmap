@@ -12,6 +12,12 @@
 
     <name>VFRMap Android Application</name>
 
+    <scm>
+        <url>https://github.com/xperimental/vfrmap/</url>
+        <connection>scm:git:git://github.com/xperimental/vfrmap.git</connection>
+        <developerConnection>scm:git:git@github.com:xperimental/vfrmap.git</developerConnection>
+    </scm>
+
     <properties>
         <platform.version>4.0.1.2</platform.version>
     </properties>
