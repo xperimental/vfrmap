@@ -20,8 +20,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.WindowManager;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
@@ -56,14 +56,14 @@ public class VfrMapActivity extends SherlockActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.main);
 
+        getSupportActionBar().setDisplayOptions(0, ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
+
         viewHeight = (TextView) findViewById(R.id.data_height);
         viewSpeed = (TextView) findViewById(R.id.data_speed);
         viewHeading = (TextView) findViewById(R.id.data_heading);
         viewAccuracy = (TextView) findViewById(R.id.data_accuracy);
 
         mapView = (MapView) findViewById(R.id.mapview);
-        mapView.setBuiltInZoomControls(true);
-        mapView.setMultiTouchControls(true);
         BaseMapSource tileSource = new BaseMapSource(TileSourceFactory.MAPNIK, IcaoTileSource.MIN_ZOOM,
                 IcaoTileSource.MAX_ZOOM);
         MapTileProviderBasic provider = new MapTileProviderBasic(this, tileSource);
@@ -140,11 +140,18 @@ public class VfrMapActivity extends SherlockActivity {
         case R.id.menu_center:
             locationOverlay.setSnapToLocation(true);
             break;
-        default:
-            String msg = "Invalid menu id: " + item.getItemId();
-            Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
-            Log.e(TAG, msg);
+        case R.id.menu_zoom_in:
+            if (mapView.getZoomLevel() < IcaoTileSource.MAX_ZOOM) {
+                mapView.getController().zoomIn();
+            }
             break;
+        case R.id.menu_zoom_out:
+            if (mapView.getZoomLevel() > IcaoTileSource.MIN_ZOOM) {
+                mapView.getController().zoomOut();
+            }
+            break;
+        default:
+            throw new IllegalArgumentException("Unknown menu id: " + item.getItemId());
         }
         return true;
     }
