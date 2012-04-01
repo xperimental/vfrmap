@@ -10,13 +10,13 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.util.Log;
 import android.view.Surface;
+import android.view.WindowManager;
 
 public class CompassManager implements SensorEventListener {
 
     public interface Listener {
 
-        public void onUpdateCompass(CompassManager sender, float azimuth,
-                float pitch, float roll);
+        public void onUpdateCompass(CompassManager sender, float azimuth, float pitch, float roll);
     }
 
     /**
@@ -26,22 +26,32 @@ public class CompassManager implements SensorEventListener {
 
     private static final String TAG = "CompassManager";
 
+    /**
+     * Damping factor for sensor filtering.
+     */
+    private static final float LOWPASS_ALPHA = 0.05f;
+
+    private final float[] R = new float[16];
+    private final float[] tmpR = new float[16];
+    private final float[] accelValues = new float[3];
+    private final float[] magnetValues = new float[3];
+    private final float[] orientation = new float[3];
+
     private SensorManager sensorManager;
     private ArrayList<Listener> listenerList;
     private Sensor accelerometer = null;
     private Sensor magnetometer = null;
-    private SensorEvent lastAccelEvent = null;
-    private SensorEvent lastMagnetEvent = null;
-    private int displayOrientation = 0;
+    private long accelTime = 0;
+    private long magnetTime = 0;
+    private int displayRotation = 0;
 
     public void setDisplayOrientation(int displayOrientation) {
-        this.displayOrientation = displayOrientation;
+        this.displayRotation = displayOrientation;
     }
 
     public CompassManager(Context context) {
         listenerList = new ArrayList<Listener>();
-        sensorManager = (SensorManager) context
-                .getSystemService(Context.SENSOR_SERVICE);
+        sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         List<Sensor> sensorList = sensorManager.getSensorList(Sensor.TYPE_ALL);
         for (Sensor sensor : sensorList) {
             switch (sensor.getType()) {
@@ -53,6 +63,13 @@ public class CompassManager implements SensorEventListener {
                 break;
             }
         }
+
+        updateDisplayRotation(context);
+    }
+
+    public void updateDisplayRotation(Context context) {
+        WindowManager windowService = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        displayRotation = windowService.getDefaultDisplay().getRotation();
     }
 
     public void addUpdateListener(Listener listener) {
@@ -70,10 +87,8 @@ public class CompassManager implements SensorEventListener {
     }
 
     public void resume() {
-        sensorManager.registerListener(this, accelerometer,
-                SensorManager.SENSOR_DELAY_UI);
-        sensorManager.registerListener(this, magnetometer,
-                SensorManager.SENSOR_DELAY_UI);
+        sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_UI);
+        sensorManager.registerListener(this, magnetometer, SensorManager.SENSOR_DELAY_UI);
     }
 
     public void pause() {
@@ -87,10 +102,12 @@ public class CompassManager implements SensorEventListener {
     @Override
     public void onSensorChanged(SensorEvent event) {
         if (event.sensor.equals(accelerometer)) {
-            lastAccelEvent = event;
+            accelTime = event.timestamp;
+            copyArrayLowPass(event.values, accelValues);
         }
         if (event.sensor.equals(magnetometer)) {
-            lastMagnetEvent = event;
+            magnetTime = event.timestamp;
+            copyArrayLowPass(event.values, magnetValues);
         }
         if (haveValidMeasurements()) {
             float[] orientation = calculateOrientation();
@@ -100,9 +117,15 @@ public class CompassManager implements SensorEventListener {
         }
     }
 
+    private void copyArrayLowPass(float[] source, float[] destination) {
+        for (int i = 0; i < destination.length; i++) {
+            destination[i] = destination[i] + LOWPASS_ALPHA * (source[i] - destination[i]);
+        }
+    }
+
     private boolean haveValidMeasurements() {
-        if (lastAccelEvent != null && lastMagnetEvent != null) {
-            if (Math.abs(lastMagnetEvent.timestamp - lastAccelEvent.timestamp) < MAX_TIMESTAMP_DIFF) {
+        if (accelTime != 0 && magnetTime != 0) {
+            if (Math.abs(magnetTime - accelTime) < MAX_TIMESTAMP_DIFF) {
                 return true;
             }
         }
@@ -110,33 +133,28 @@ public class CompassManager implements SensorEventListener {
     }
 
     private float[] calculateOrientation() {
-        float[] result = new float[3];
-        float[] R = new float[9];
-        boolean success = SensorManager.getRotationMatrix(R, null,
-                lastAccelEvent.values, lastMagnetEvent.values);
+        boolean success = SensorManager.getRotationMatrix(R, null, accelValues, magnetValues);
         if (success) {
             float[] displayRemapR = getRemappedMatrix(R);
-            SensorManager.getOrientation(displayRemapR, result);
-            return result;
+            SensorManager.getOrientation(displayRemapR, orientation);
+            return orientation;
         } else {
             return null;
         }
     }
 
     private float[] getRemappedMatrix(final float[] R) {
-        switch (displayOrientation) {
+        switch (displayRotation) {
         case Surface.ROTATION_180:
             Log.w(TAG, "180 degree rotation not supported!");
         case Surface.ROTATION_0:
             break;
         case Surface.ROTATION_90:
         case Surface.ROTATION_270:
-            float[] remapR = new float[9];
-            SensorManager.remapCoordinateSystem(R, SensorManager.AXIS_X,
-                    SensorManager.AXIS_Z, remapR);
-            return remapR;
+            SensorManager.remapCoordinateSystem(R, SensorManager.AXIS_X, SensorManager.AXIS_Z, tmpR);
+            return tmpR;
         default:
-            Log.w(TAG, "Unknown display orientation: " + displayOrientation);
+            Log.w(TAG, "Unknown display orientation: " + displayRotation);
         }
         return R;
     }

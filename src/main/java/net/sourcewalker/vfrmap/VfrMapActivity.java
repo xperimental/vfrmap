@@ -14,7 +14,6 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.TextView;
@@ -26,6 +25,7 @@ import com.actionbarsherlock.view.MenuItem;
 
 public class VfrMapActivity extends SherlockActivity {
 
+    @SuppressWarnings("unused")
     private static final String TAG = "VfrMapActivity";
 
     private static final float RAD_TO_DEGREE = (float) (180 / Math.PI);
@@ -91,10 +91,7 @@ public class VfrMapActivity extends SherlockActivity {
             locationListener.onLocationChanged(lastLocation);
         }
 
-        WindowManager windowService = (WindowManager) getSystemService(WINDOW_SERVICE);
-        int displayOrientation = windowService.getDefaultDisplay().getOrientation();
-        compassManager.setDisplayOrientation(displayOrientation);
-        Log.d(TAG, "displayOrientation: " + displayOrientation);
+        compassManager.updateDisplayRotation(this);
         compassManager.resume();
     }
 
@@ -250,11 +247,9 @@ public class VfrMapActivity extends SherlockActivity {
     private class CompassListener implements CompassManager.Listener {
 
         private final String formatHeading;
-        private final HeadingAverager averager;
 
         public CompassListener() {
             this.formatHeading = getString(R.string.format_heading);
-            this.averager = new HeadingAverager();
         }
 
         /*
@@ -265,48 +260,12 @@ public class VfrMapActivity extends SherlockActivity {
          */
         @Override
         public void onUpdateCompass(CompassManager sender, float azimuth, float pitch, float roll) {
-            averager.addSample(azimuth);
-            float heading = (averager.getAverage() * RAD_TO_DEGREE) % 360;
+            float heading = (azimuth * RAD_TO_DEGREE) % 360;
             if (heading < 0) {
                 heading += 360;
             }
             locationOverlay.setAzimuth(heading);
             viewHeading.setText(String.format(formatHeading, heading));
-        }
-
-    }
-
-    private static class HeadingAverager {
-
-        private static final int NUM_SAMPLES = 5;
-
-        private final double[] sinSamples;
-        private final double[] cosSamples;
-        private int index = 0;
-
-        public void addSample(double heading) {
-            sinSamples[index] = Math.sin(heading);
-            cosSamples[index] = Math.cos(heading);
-            index = (index + 1) % NUM_SAMPLES;
-        }
-
-        public float getAverage() {
-            double sinAvg = averageArray(sinSamples);
-            double cosAvg = averageArray(cosSamples);
-            return (float) Math.atan2(sinAvg, cosAvg);
-        }
-
-        private double averageArray(double[] samples) {
-            double sum = 0;
-            for (double v : samples) {
-                sum += v;
-            }
-            return sum / samples.length;
-        }
-
-        public HeadingAverager() {
-            sinSamples = new double[NUM_SAMPLES];
-            cosSamples = new double[NUM_SAMPLES];
         }
 
     }
