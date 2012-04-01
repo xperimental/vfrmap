@@ -13,4 +13,8 @@
 
     <style name="Theme.Vfrmap" parent="Theme.Sherlock" />
 
+    <style name="Theme.Vfrmap.Fullscreen" parent="Theme.Vfrmap">
+        <item name="android:windowFullscreen">true</item>
+    </style>
+
 </resources>

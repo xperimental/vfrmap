@@ -22,7 +22,9 @@
         android:theme="@style/Theme.Vfrmap" >
         <activity
             android:name=".VfrMapActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:configChanges="orientation|keyboard"
+            android:theme="@style/Theme.Vfrmap.Fullscreen" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
