@@ -21,8 +21,9 @@ public class CompassManager implements SensorEventListener {
 
     /**
      * Maximum difference of sensor measurement timestamps in nanoseconds.
+     * (100ms)
      */
-    private static final long MAX_TIMESTAMP_DIFF = 20000;
+    private static final long MAX_TIMESTAMP_DIFF = 100000000;
 
     private static final String TAG = "CompassManager";
 
