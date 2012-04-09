@@ -146,10 +146,11 @@ public class CompassManager implements SensorEventListener {
 
     private float[] getRemappedMatrix(final float[] R) {
         switch (displayRotation) {
-        case Surface.ROTATION_180:
-            Log.w(TAG, "180 degree rotation not supported!");
         case Surface.ROTATION_0:
             break;
+        case Surface.ROTATION_180:
+            SensorManager.remapCoordinateSystem(R, SensorManager.AXIS_MINUS_X, SensorManager.AXIS_MINUS_Y, tmpR);
+            return tmpR;
         case Surface.ROTATION_90:
         case Surface.ROTATION_270:
             SensorManager.remapCoordinateSystem(R, SensorManager.AXIS_X, SensorManager.AXIS_Z, tmpR);
