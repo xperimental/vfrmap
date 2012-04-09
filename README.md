@@ -6,6 +6,22 @@ This small Android&trade; application is a display for the ICAO map from
 [VFR Bulletin][vfr]. It also uses a small plane icon on the map to denote the
 current location and orientation of the device.
 
+Features
+--------
+
+ * Show scrollable and zoomable map at current location
+ * Display current location and heading on map
+ * Display current location, heading and altitude (as reported from GPS)
+
+Planned features
+----------------
+
+ * List of airports, navigation aids and other points of interest
+ * "Direct to" mode for points of interest
+ * Record GPS track
+ * Route planning
+ * Automatic log book (takeoff/landing times)
+
 License
 -------
     Copyright 2011 Robert Jacob
