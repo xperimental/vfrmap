@@ -1,5 +1,6 @@
 package net.sourcewalker.vfrmap;
 
+import android.app.Activity;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
@@ -34,14 +35,16 @@ public class SettingsActivity extends SherlockPreferenceActivity implements OnSh
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         updateViews();
+
+        setResult(Activity.RESULT_OK);
     }
 
     private void updateViews() {
-        int index = altitudeUnitPreference.findIndexOfValue(settings.getAltitudeUnit());
+        int index = altitudeUnitPreference.findIndexOfValue(settings.getAltitudeUnit().getValue());
         if (index != -1) {
             altitudeUnitPreference.setSummary(altitudeUnitPreference.getEntries()[index]);
         }
-        index = speedUnitPreference.findIndexOfValue(settings.getSpeedUnit());
+        index = speedUnitPreference.findIndexOfValue(settings.getSpeedUnit().getValue());
         if (index != -1) {
             speedUnitPreference.setSummary(speedUnitPreference.getEntries()[index]);
         }

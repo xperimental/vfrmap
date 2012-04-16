@@ -10,6 +10,7 @@
     <string name="format_height_ft">%.0f ft</string>
     <string name="format_speed_kph">%.0f km/h</string>
     <string name="format_speed_kn">%.0f kn</string>
+    <string name="format_speed_ms">%.0f m/s</string>
     <string name="format_heading">%.0f °</string>
     <string name="format_accuracy">%.0f m</string>
     <string name="age_seconds">s</string>

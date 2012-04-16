@@ -2,6 +2,8 @@ package net.sourcewalker.vfrmap;
 
 import java.io.File;
 
+import net.sourcewalker.vfrmap.data.AltitudeUnit;
+import net.sourcewalker.vfrmap.data.SpeedUnit;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -62,12 +64,12 @@ public final class AppSettings {
         edit.commit();
     }
 
-    public String getAltitudeUnit() {
-        return prefs.getString(KEY_UNITS_ALTITUDE, defaultAltitudeUnit);
+    public AltitudeUnit getAltitudeUnit() {
+        return AltitudeUnit.parseValue(prefs.getString(KEY_UNITS_ALTITUDE, defaultAltitudeUnit));
     }
 
-    public String getSpeedUnit() {
-        return prefs.getString(KEY_UNITS_SPEED, defaultSpeedUnit);
+    public SpeedUnit getSpeedUnit() {
+        return SpeedUnit.parseValue(prefs.getString(KEY_UNITS_SPEED, defaultSpeedUnit));
     }
 
     public static File getExternalFilesDir() {

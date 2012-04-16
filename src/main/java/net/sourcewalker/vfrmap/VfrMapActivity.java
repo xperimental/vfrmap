@@ -1,5 +1,7 @@
 package net.sourcewalker.vfrmap;
 
+import net.sourcewalker.vfrmap.data.AltitudeUnit;
+import net.sourcewalker.vfrmap.data.SpeedUnit;
 import net.sourcewalker.vfrmap.map.IcaoTileProvider;
 import net.sourcewalker.vfrmap.map.IcaoTileSource;
 import net.sourcewalker.vfrmap.map.PlaneOverlay;
@@ -10,6 +12,7 @@ import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
@@ -37,7 +40,10 @@ public class VfrMapActivity extends SherlockActivity {
     private static final float RAD_TO_DEGREE = (float) (180 / Math.PI);
     private static final long WARN_LOCATION_AGE = 30000;
     private static final double METER_TO_FEET = 3.2808399;
-    private static final double MS_TO_KMH = 3.6;
+    private static final float MS_TO_KMH = 3.6f;
+    private static final float MS_TO_KNOTS = 1.94384449f;
+
+    private static final int REQUEST_SETTINGS = 100;
 
     private AppSettings settings;
     private MapView mapView;
@@ -162,7 +168,7 @@ public class VfrMapActivity extends SherlockActivity {
             }
             break;
         case R.id.menu_settings:
-            startActivity(new Intent(this, SettingsActivity.class));
+            startActivityForResult(new Intent(this, SettingsActivity.class), REQUEST_SETTINGS);
             break;
         default:
             throw new IllegalArgumentException("Unknown menu id: " + item.getItemId());
@@ -170,10 +176,17 @@ public class VfrMapActivity extends SherlockActivity {
         return true;
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_SETTINGS && resultCode == Activity.RESULT_OK) {
+            locationListener.updateUnits();
+        }
+    }
+
     private class OwnLocationListener implements LocationListener {
 
-        private final String formatHeight;
-        private final String formatSpeed;
         private final String formatAccuracy;
         private final String formatOldGps;
         private final String ageSeconds;
@@ -181,17 +194,46 @@ public class VfrMapActivity extends SherlockActivity {
         private final String ageHours;
         private final String ageDays;
 
+        private AltitudeUnit altitudeUnit;
+        private SpeedUnit speedUnit;
+        private String formatAltitude;
+        private String formatSpeed;
+
         private Location lastLocation;
 
         public OwnLocationListener() {
-            formatHeight = getString(R.string.format_height_ft);
-            formatSpeed = getString(R.string.format_speed_kph);
             formatAccuracy = getString(R.string.format_accuracy);
             formatOldGps = getString(R.string.format_old_gps);
             ageSeconds = getString(R.string.age_seconds);
             ageMinutes = getString(R.string.age_minutes);
             ageHours = getString(R.string.age_hours);
             ageDays = getString(R.string.age_days);
+
+            updateUnits();
+        }
+
+        private void updateUnits() {
+            altitudeUnit = settings.getAltitudeUnit();
+            speedUnit = settings.getSpeedUnit();
+            switch (altitudeUnit) {
+            case FEET:
+                formatAltitude = getString(R.string.format_height_ft);
+                break;
+            case METER:
+            default:
+                formatAltitude = getString(R.string.format_height_m);
+            }
+            switch (speedUnit) {
+            case KNOTS:
+                formatSpeed = getString(R.string.format_speed_kn);
+                break;
+            case MS:
+                formatSpeed = getString(R.string.format_speed_ms);
+                break;
+            case KPH:
+            default:
+                formatSpeed = getString(R.string.format_speed_kph);
+            }
         }
 
         public Location getLastLocation() {
@@ -211,13 +253,35 @@ public class VfrMapActivity extends SherlockActivity {
             IGeoPoint point = new GeoPoint(location.getLatitude(), location.getLongitude());
             locationOverlay.setPlaneLocation(point);
 
-            viewHeight.setText(String.format(formatHeight, location.getAltitude() * METER_TO_FEET));
-            viewSpeed.setText(String.format(formatSpeed, location.getSpeed() * MS_TO_KMH));
+            viewHeight.setText(String.format(formatAltitude, calcAltitude(location)));
+            viewSpeed.setText(String.format(formatSpeed, calcSpeed(location)));
             final long gpsAge = System.currentTimeMillis() - location.getTime();
             if (gpsAge > WARN_LOCATION_AGE) {
                 viewAccuracy.setText(String.format(formatOldGps, formatAge(gpsAge)));
             } else {
                 viewAccuracy.setText(String.format(formatAccuracy, location.getAccuracy()));
+            }
+        }
+
+        private float calcSpeed(Location location) {
+            switch (speedUnit) {
+            case KNOTS:
+                return location.getSpeed() * MS_TO_KNOTS;
+            case MS:
+                return location.getSpeed();
+            case KPH:
+            default:
+                return location.getSpeed() * MS_TO_KMH;
+            }
+        }
+
+        private double calcAltitude(Location location) {
+            switch (altitudeUnit) {
+            case FEET:
+                return location.getAltitude() * METER_TO_FEET;
+            case METER:
+            default:
+                return location.getAltitude();
             }
         }
 
