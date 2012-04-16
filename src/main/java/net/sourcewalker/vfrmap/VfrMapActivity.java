@@ -28,11 +28,17 @@ public class VfrMapActivity extends SherlockActivity {
     @SuppressWarnings("unused")
     private static final String TAG = "VfrMapActivity";
 
+    /**
+     * Maximum age for saving location on pause.
+     */
+    private static final long MAX_LAST_LOCATION_AGE = 5 * 60 * 1000;
+
     private static final float RAD_TO_DEGREE = (float) (180 / Math.PI);
     private static final long WARN_LOCATION_AGE = 30000;
     private static final double METER_TO_FEET = 3.2808399;
     private static final double MS_TO_KMH = 3.6;
 
+    private AppSettings settings;
     private MapView mapView;
     private PlaneOverlay locationOverlay;
     private LocationManager locationManager;
@@ -54,6 +60,8 @@ public class VfrMapActivity extends SherlockActivity {
         setContentView(R.layout.main);
 
         getSupportActionBar().setDisplayOptions(0, ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
+
+        settings = new AppSettings(this);
 
         viewHeight = (TextView) findViewById(R.id.data_height);
         viewSpeed = (TextView) findViewById(R.id.data_speed);
@@ -87,9 +95,18 @@ public class VfrMapActivity extends SherlockActivity {
 
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 10, locationListener);
         Location lastLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        if (lastLocation != null) {
-            locationListener.onLocationChanged(lastLocation);
+        if (lastLocation == null) {
+            // Try to get location from preferences
+            lastLocation = settings.getLastLocation();
+            if (lastLocation == null) {
+                // Set default location
+                lastLocation = new Location("default");
+                lastLocation.setAccuracy(1024);
+                lastLocation.setLatitude(50.1258);
+                lastLocation.setLongitude(8.9307);
+            }
         }
+        locationListener.onLocationChanged(lastLocation);
 
         compassManager.updateDisplayRotation(this);
         compassManager.resume();
@@ -101,10 +118,16 @@ public class VfrMapActivity extends SherlockActivity {
      */
     @Override
     protected void onPause() {
+        super.onPause();
+
         compassManager.pause();
         locationManager.removeUpdates(locationListener);
 
-        super.onPause();
+        // Save location
+        Location lastLocation = locationListener.getLastLocation();
+        if (lastLocation != null && (System.currentTimeMillis() - lastLocation.getTime() < MAX_LAST_LOCATION_AGE)) {
+            settings.setLastLocation(lastLocation);
+        }
     }
 
     /*
@@ -154,6 +177,8 @@ public class VfrMapActivity extends SherlockActivity {
         private final String ageHours;
         private final String ageDays;
 
+        private Location lastLocation;
+
         public OwnLocationListener() {
             formatHeight = getString(R.string.format_height_ft);
             formatSpeed = getString(R.string.format_speed_kph);
@@ -165,6 +190,10 @@ public class VfrMapActivity extends SherlockActivity {
             ageDays = getString(R.string.age_days);
         }
 
+        public Location getLastLocation() {
+            return lastLocation;
+        }
+
         /*
          * (non-Javadoc)
          * @see
@@ -173,6 +202,8 @@ public class VfrMapActivity extends SherlockActivity {
          */
         @Override
         public void onLocationChanged(Location location) {
+            lastLocation = location;
+
             IGeoPoint point = new GeoPoint(location.getLatitude(), location.getLongitude());
             locationOverlay.setPlaneLocation(point);
 
