@@ -1,3 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceCategory
+        android:key="settings.units"
+        android:title="@string/settings_units_category_title" >
+        <ListPreference
+            android:entries="@array/settings_units_altitude_entries"
+            android:entryValues="@array/settings_units_altitude_values"
+            android:key="settings.units.altitude"
+            android:summary="@string/settings_units_altitude_entries_ft"
+            android:defaultValue="@string/settings_units_altitude_default"
+            android:title="@string/settings_units_altitude_title" />
+        <ListPreference
+            android:entries="@array/settings_units_speed_entries"
+            android:entryValues="@array/settings_units_speed_values"
+            android:key="settings.units.speed"
+            android:defaultValue="@string/settings_units_speed_default"
+            android:summary="@string/settings_units_speed_entries_kph"
+            android:title="@string/settings_units_speed_title" />
+    </PreferenceCategory>
+
 </PreferenceScreen>

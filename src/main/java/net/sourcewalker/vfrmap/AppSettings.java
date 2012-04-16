@@ -21,10 +21,17 @@ public final class AppSettings {
     private static final String KEY_LAST_LOCATION_ACCURACY = "lastlocation.accuracy";
     private static final String KEY_LAST_LOCATION_SPEED = "lastlocation.speed";
 
+    public static final String KEY_UNITS_ALTITUDE = "settings.units.altitude";
+    public static final String KEY_UNITS_SPEED = "settings.units.speed";
+
     private final SharedPreferences prefs;
+    private final String defaultAltitudeUnit;
+    private final String defaultSpeedUnit;
 
     public AppSettings(Context context) {
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        defaultAltitudeUnit = context.getString(R.string.settings_units_altitude_default);
+        defaultSpeedUnit = context.getString(R.string.settings_units_speed_default);
     }
 
     public Location getLastLocation() {
@@ -53,6 +60,14 @@ public final class AppSettings {
         edit.putFloat(KEY_LAST_LOCATION_SPEED, lastLocation.getSpeed());
         edit.putLong(KEY_LAST_LOCATION_TIMESTAMP, lastLocation.getTime());
         edit.commit();
+    }
+
+    public String getAltitudeUnit() {
+        return prefs.getString(KEY_UNITS_ALTITUDE, defaultAltitudeUnit);
+    }
+
+    public String getSpeedUnit() {
+        return prefs.getString(KEY_UNITS_SPEED, defaultSpeedUnit);
     }
 
     public static File getExternalFilesDir() {

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="settings_units_altitude_entries">
+        <item>@string/settings_units_altitude_entries_ft</item>
+        <item>@string/settings_units_altitude_entries_m</item>
+    </string-array>
+    <string-array name="settings_units_altitude_values">
+        <item>@string/settings_units_altitude_default</item>
+        <item>m</item>
+    </string-array>
+    <string-array name="settings_units_speed_entries">
+        <item>@string/settings_units_speed_entries_kph</item>
+        <item>@string/settings_units_speed_entries_kn</item>
+        <item>@string/settings_units_speed_entries_ms</item>
+    </string-array>
+    <string-array name="settings_units_speed_values">
+        <item>@string/settings_units_speed_default</item>
+        <item>kn</item>
+        <item>ms</item>
+    </string-array>
+
+</resources>
