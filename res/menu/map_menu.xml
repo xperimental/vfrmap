@@ -1,19 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
     <item
         android:id="@+id/menu_zoom_in"
-        android:title="@string/menu_zoom_in"
         android:icon="@drawable/ic_menu_zoom_in"
-        android:showAsAction="always" />
+        android:showAsAction="always"
+        android:title="@string/menu_zoom_in"/>
     <item
         android:id="@+id/menu_zoom_out"
-        android:title="@string/menu_zoom_out"
         android:icon="@drawable/ic_menu_zoom_out"
-        android:showAsAction="always" />
+        android:showAsAction="always"
+        android:title="@string/menu_zoom_out"/>
     <item
         android:id="@+id/menu_center"
-        android:title="@string/menu_center"
         android:icon="@drawable/ic_menu_mylocation"
-        android:showAsAction="always" />
+        android:showAsAction="always"
+        android:title="@string/menu_center"/>
+    <item
+        android:id="@+id/menu_settings"
+        android:icon="@drawable/ic_menu_preferences"
+        android:showAsAction="never"
+        android:title="@string/menu_settings"/>
+
 </menu>

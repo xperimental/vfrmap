@@ -10,6 +10,7 @@ import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 
+import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -159,6 +160,9 @@ public class VfrMapActivity extends SherlockActivity {
             if (mapView.getZoomLevel() > IcaoTileSource.MIN_ZOOM) {
                 mapView.getController().zoomOut();
             }
+            break;
+        case R.id.menu_settings:
+            startActivity(new Intent(this, SettingsActivity.class));
             break;
         default:
             throw new IllegalArgumentException("Unknown menu id: " + item.getItemId());
