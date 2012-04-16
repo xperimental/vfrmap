@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Hello World, MapActivity!</string>
     <string name="app_name">VFR Map</string>
-    <string name="data_height">Height:</string>
-    <string name="data_speed">Speed:</string>
-    <string name="data_heading">Heading:</string>
+    <string name="data_height">Altitude:</string>
+    <string name="data_speed">Speed (ground):</string>
+    <string name="data_heading">Heading (mag):</string>
     <string name="data_accuracy">Accuracy (GPS):</string>
     <string name="format_old_gps">Old GPS data! (Age: %s)</string>
     <string name="format_height_m">%.0f m</string>
     <string name="format_height_ft">%.0f ft</string>
     <string name="format_speed_kph">%.0f km/h</string>
+    <string name="format_speed_kn">%.0f kn</string>
     <string name="format_heading">%.0f °</string>
     <string name="format_accuracy">%.0f m</string>
     <string name="age_seconds">s</string>
