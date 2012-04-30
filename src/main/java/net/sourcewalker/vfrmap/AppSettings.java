@@ -25,6 +25,7 @@ public final class AppSettings {
 
     public static final String KEY_UNITS_ALTITUDE = "settings.units.altitude";
     public static final String KEY_UNITS_SPEED = "settings.units.speed";
+    public static final String KEY_DISPLAY_GPSHEADING = "settings.display.gpsheading";
 
     private final SharedPreferences prefs;
     private final String defaultAltitudeUnit;
@@ -70,6 +71,10 @@ public final class AppSettings {
 
     public SpeedUnit getSpeedUnit() {
         return SpeedUnit.parseValue(prefs.getString(KEY_UNITS_SPEED, defaultSpeedUnit));
+    }
+
+    public boolean useGpsHeading() {
+        return prefs.getBoolean(KEY_DISPLAY_GPSHEADING, true);
     }
 
     public static File getExternalFilesDir() {

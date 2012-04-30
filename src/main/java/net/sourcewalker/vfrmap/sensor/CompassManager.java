@@ -14,6 +14,8 @@ import android.view.WindowManager;
 
 public class CompassManager implements SensorEventListener {
 
+    private boolean resumed;
+
     public interface Listener {
 
         public void onUpdateCompass(CompassManager sender, float azimuth, float pitch, float roll);
@@ -88,12 +90,18 @@ public class CompassManager implements SensorEventListener {
     }
 
     public void resume() {
-        sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_UI);
-        sensorManager.registerListener(this, magnetometer, SensorManager.SENSOR_DELAY_UI);
+        if (!resumed) {
+            sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_UI);
+            sensorManager.registerListener(this, magnetometer, SensorManager.SENSOR_DELAY_UI);
+            resumed = true;
+        }
     }
 
     public void pause() {
-        sensorManager.unregisterListener(this);
+        if (resumed) {
+            sensorManager.unregisterListener(this);
+            resumed = false;
+        }
     }
 
     @Override

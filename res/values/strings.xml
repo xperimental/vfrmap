@@ -4,6 +4,7 @@
     <string name="data_height">Altitude:</string>
     <string name="data_speed">Speed (ground):</string>
     <string name="data_heading">Heading (mag):</string>
+    <string name="data_heading_gps">Heading (GPS):</string>
     <string name="data_accuracy">Accuracy (GPS):</string>
     <string name="format_old_gps">Old GPS data! (Age: %s)</string>
     <string name="format_height_m">%.0f m</string>
@@ -32,4 +33,9 @@
     <string name="settings_units_speed_entries_kph">km/h</string>
     <string name="settings_units_speed_entries_kn">Knots</string>
     <string name="settings_units_speed_entries_ms">m/s</string>
+    <string name="settings_display_category_title">Display settings</string>
+    <string name="settings_display_gpsheading_title">Use GPS heading</string>
+    <string name="settings_display_gpsheading_on">Use GPS heading instead of compass heading above a certain speed.
+    </string>
+    <string name="settings_display_gpsheading_off">Always use compass heading.</string>
 </resources>

@@ -42,6 +42,7 @@ public class VfrMapActivity extends SherlockActivity {
     private static final double METER_TO_FEET = 3.2808399;
     private static final float MS_TO_KMH = 3.6f;
     private static final float MS_TO_KNOTS = 1.94384449f;
+    private static final float GPS_HEADING_SPEED = 10 / MS_TO_KMH;
 
     private static final int REQUEST_SETTINGS = 100;
 
@@ -54,7 +55,9 @@ public class VfrMapActivity extends SherlockActivity {
     private TextView viewHeight;
     private TextView viewSpeed;
     private TextView viewHeading;
+    private TextView viewHeadingHeader;
     private TextView viewAccuracy;
+    private boolean gpsSpeedMode;
 
     /*
      * (non-Javadoc)
@@ -73,6 +76,7 @@ public class VfrMapActivity extends SherlockActivity {
         viewHeight = (TextView) findViewById(R.id.data_height);
         viewSpeed = (TextView) findViewById(R.id.data_speed);
         viewHeading = (TextView) findViewById(R.id.data_heading);
+        viewHeadingHeader = (TextView) findViewById(R.id.header_heading);
         viewAccuracy = (TextView) findViewById(R.id.data_accuracy);
 
         IcaoTileProvider icaoProvider = new IcaoTileProvider(this);
@@ -185,6 +189,19 @@ public class VfrMapActivity extends SherlockActivity {
         }
     }
 
+    private void setGpsSpeedMode(boolean gpsSpeedMode) {
+        if (this.gpsSpeedMode != gpsSpeedMode) {
+            this.gpsSpeedMode = gpsSpeedMode;
+            if (gpsSpeedMode) {
+                compassManager.pause();
+                viewHeadingHeader.setText(R.string.data_heading_gps);
+            } else {
+                compassManager.resume();
+                viewHeadingHeader.setText(R.string.data_heading);
+            }
+        }
+    }
+
     private class OwnLocationListener implements LocationListener {
 
         private final String formatAccuracy;
@@ -198,12 +215,14 @@ public class VfrMapActivity extends SherlockActivity {
         private SpeedUnit speedUnit;
         private String formatAltitude;
         private String formatSpeed;
+        private String formatHeading;
 
         private Location lastLocation;
 
         public OwnLocationListener() {
             formatAccuracy = getString(R.string.format_accuracy);
             formatOldGps = getString(R.string.format_old_gps);
+            formatHeading = getString(R.string.format_heading);
             ageSeconds = getString(R.string.age_seconds);
             ageMinutes = getString(R.string.age_minutes);
             ageHours = getString(R.string.age_hours);
@@ -260,6 +279,13 @@ public class VfrMapActivity extends SherlockActivity {
                 viewAccuracy.setText(String.format(formatOldGps, formatAge(gpsAge)));
             } else {
                 viewAccuracy.setText(String.format(formatAccuracy, location.getAccuracy()));
+            }
+
+            if (location.hasSpeed() && location.getSpeed() > GPS_HEADING_SPEED && location.hasBearing()) {
+                setGpsSpeedMode(true);
+                viewHeading.setText(String.format(formatHeading, location.getBearing()));
+            } else {
+                setGpsSpeedMode(false);
             }
         }
 

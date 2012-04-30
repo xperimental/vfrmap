@@ -33,6 +33,7 @@
 
                 <TextView
                     style="@style/data_header"
+                    android:id="@+id/header_heading"
                     android:gravity="right"
                     android:text="@string/data_heading" />
             </TableRow>

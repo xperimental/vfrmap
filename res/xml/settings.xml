@@ -19,5 +19,15 @@
             android:summary="@string/settings_units_speed_entries_kph"
             android:title="@string/settings_units_speed_title" />
     </PreferenceCategory>
+    <PreferenceCategory
+        android:key="settings.display"
+        android:title="@string/settings_display_category_title">
+        <CheckBoxPreference
+            android:key="settings.display.gpsheading"
+            android:title="@string/settings_display_gpsheading_title"
+            android:summaryOn="@string/settings_display_gpsheading_on"
+            android:summaryOff="@string/settings_display_gpsheading_off"
+            android:defaultValue="true" />
+    </PreferenceCategory>
 
 </PreferenceScreen>
