@@ -4,4 +4,8 @@ target
 .classpath
 .project
 .settings/
+.idea/
+gen-external-apklibs/
+out/
+*.iml
 
