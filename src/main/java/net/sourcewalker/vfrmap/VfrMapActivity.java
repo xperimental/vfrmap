@@ -1,31 +1,29 @@
 package net.sourcewalker.vfrmap;
 
-import net.sourcewalker.vfrmap.data.AltitudeUnit;
-import net.sourcewalker.vfrmap.data.SpeedUnit;
-import net.sourcewalker.vfrmap.map.IcaoTileProvider;
-import net.sourcewalker.vfrmap.map.IcaoTileSource;
-import net.sourcewalker.vfrmap.map.PlaneOverlay;
-import net.sourcewalker.vfrmap.sensor.CompassManager;
-
-import org.osmdroid.DefaultResourceProxyImpl;
-import org.osmdroid.api.IGeoPoint;
-import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.MapView;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.TextView;
-
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
+import net.sourcewalker.vfrmap.data.AltitudeUnit;
+import net.sourcewalker.vfrmap.data.SpeedUnit;
+import net.sourcewalker.vfrmap.map.IcaoTileProvider;
+import net.sourcewalker.vfrmap.map.IcaoTileSource;
+import net.sourcewalker.vfrmap.map.PlaneOverlay;
+import net.sourcewalker.vfrmap.sensor.CompassManager;
+import org.osmdroid.DefaultResourceProxyImpl;
+import org.osmdroid.api.IGeoPoint;
+import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.MapView;
 
 public class VfrMapActivity extends SherlockActivity {
 
@@ -94,6 +92,10 @@ public class VfrMapActivity extends SherlockActivity {
 
         compassManager = new CompassManager(this);
         compassManager.addUpdateListener(new CompassListener());
+
+        if (AppConstants.HONEYCOMB) {
+            viewAccuracy.setOnSystemUiVisibilityChangeListener(new HideUiListener());
+        }
     }
 
     /*
@@ -121,6 +123,8 @@ public class VfrMapActivity extends SherlockActivity {
 
         compassManager.updateDisplayRotation(this);
         compassManager.resume();
+
+        hideSystemUI();
     }
 
     /*
@@ -186,6 +190,12 @@ public class VfrMapActivity extends SherlockActivity {
 
         if (requestCode == REQUEST_SETTINGS && resultCode == Activity.RESULT_OK) {
             locationListener.updateUnits();
+        }
+    }
+
+    private void hideSystemUI() {
+        if (AppConstants.HONEYCOMB) {
+            viewAccuracy.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
         }
     }
 
@@ -393,6 +403,20 @@ public class VfrMapActivity extends SherlockActivity {
             viewHeading.setText(String.format(formatHeading, heading));
         }
 
+    }
+
+    private class HideUiListener implements View.OnSystemUiVisibilityChangeListener {
+        @Override
+        public void onSystemUiVisibilityChange(int visibility) {
+            if (visibility == View.SYSTEM_UI_FLAG_VISIBLE) {
+                viewAccuracy.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        hideSystemUI();
+                    }
+                }, 2000);
+            }
+        }
     }
 
 }
