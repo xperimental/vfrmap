@@ -35,7 +35,13 @@
     <string name="settings_units_speed_entries_ms">m/s</string>
     <string name="settings_display_category_title">Display settings</string>
     <string name="settings_display_gpsheading_title">Use GPS heading</string>
-    <string name="settings_display_gpsheading_on">Use GPS heading instead of compass heading above a certain speed.
-    </string>
+    <string name="settings_display_gpsheading_on">Use GPS heading instead of compass heading above a certain speed.</string>
     <string name="settings_display_gpsheading_off">Always use compass heading.</string>
+    <string name="settings_misc_category_title">Other settings</string>
+    <string name="settings_misc_update_title">Check for update...</string>
+    <string name="update_dialog_check">Checking for updates...</string>
+    <string name="update_dialog_error">Error while checking for update! Please try again.</string>
+    <string name="update_dialog_current">You have the current version.</string>
+    <string name="update_dialog_available_format">There is an update available:\n\nYour version: %1$s\nUpdate version: %2$s\n\nDownload and install update?</string>
+    <string name="update_dialog_error_download">Error while downloading update! Please try again.</string>
 </resources>

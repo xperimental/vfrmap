@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory
         android:key="settings.units"
-        android:title="@string/settings_units_category_title" >
+        android:title="@string/settings_units_category_title">
         <ListPreference
             android:entries="@array/settings_units_altitude_entries"
             android:entryValues="@array/settings_units_altitude_values"
@@ -28,6 +28,13 @@
             android:summaryOn="@string/settings_display_gpsheading_on"
             android:summaryOff="@string/settings_display_gpsheading_off"
             android:defaultValue="true" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:key="settings.misc"
+        android:title="@string/settings_misc_category_title">
+        <Preference
+            android:key="settings.misc.update"
+            android:title="@string/settings_misc_update_title" />
     </PreferenceCategory>
 
 </PreferenceScreen>
